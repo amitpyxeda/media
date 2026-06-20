@@ -1,0 +1,1067 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Adventures in the World of Amit</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #f7f1df;
+      --muted: #bdb7a8;
+      --panel: rgba(20, 23, 28, 0.82);
+      --panel-strong: rgba(12, 14, 18, 0.94);
+      --line: rgba(255, 255, 255, 0.14);
+      --tea: #e7bd53;
+      --costco: #3ba7ff;
+      --amazon: #ff9a3c;
+      --rage: #ff4d6d;
+      --good: #72e3a0;
+      --bad: #ff6b6b;
+      --shadow: rgba(0, 0, 0, 0.38);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 18% 14%, rgba(231, 189, 83, 0.18), transparent 28%),
+        radial-gradient(circle at 82% 4%, rgba(59, 167, 255, 0.14), transparent 26%),
+        linear-gradient(135deg, #16181d 0%, #22242a 45%, #101216 100%);
+      overflow-x: hidden;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 16px clamp(14px, 3vw, 34px);
+      border-bottom: 1px solid var(--line);
+      background: rgba(9, 10, 13, 0.55);
+      backdrop-filter: blur(16px);
+    }
+
+    .brand {
+      min-width: 0;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.35rem, 2.8vw, 2.45rem);
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+
+    .tagline {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .timebox {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .pill {
+      min-height: 36px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--ink);
+      white-space: nowrap;
+      box-shadow: 0 10px 24px var(--shadow);
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: minmax(280px, 1fr) minmax(310px, 420px);
+      gap: 18px;
+      padding: 18px clamp(14px, 3vw, 34px) 24px;
+      min-height: 0;
+    }
+
+    .stage-wrap {
+      min-width: 0;
+      display: grid;
+      grid-template-rows: minmax(360px, 1fr) auto;
+      gap: 14px;
+    }
+
+    .stage {
+      position: relative;
+      min-height: 360px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #20262b;
+      box-shadow: 0 24px 60px var(--shadow);
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      image-rendering: auto;
+    }
+
+    .toast {
+      position: absolute;
+      left: 14px;
+      bottom: 14px;
+      max-width: min(520px, calc(100% - 28px));
+      padding: 11px 13px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 8px;
+      background: rgba(8, 10, 13, 0.78);
+      color: var(--ink);
+      line-height: 1.35;
+      box-shadow: 0 16px 34px rgba(0, 0, 0, 0.34);
+      pointer-events: none;
+    }
+
+    .control-band {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .action {
+      min-height: 74px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.07);
+      color: var(--ink);
+      cursor: pointer;
+      box-shadow: 0 14px 30px var(--shadow);
+      transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+    }
+
+    .action:hover,
+    .action:focus-visible {
+      transform: translateY(-2px);
+      border-color: rgba(255, 255, 255, 0.32);
+      background: rgba(255, 255, 255, 0.12);
+      outline: none;
+    }
+
+    .action:active {
+      transform: translateY(0);
+    }
+
+    .action strong {
+      display: block;
+      font-size: 0.98rem;
+      line-height: 1.1;
+    }
+
+    .action span {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.25;
+    }
+
+    .sidebar {
+      min-width: 0;
+      display: grid;
+      gap: 14px;
+      align-content: start;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: 0 24px 60px var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel h2 {
+      margin: 0;
+      padding: 13px 14px 10px;
+      font-size: 0.92rem;
+      line-height: 1;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      border-bottom: 1px solid var(--line);
+      background: rgba(0, 0, 0, 0.16);
+    }
+
+    .stats {
+      display: grid;
+      gap: 12px;
+      padding: 14px;
+    }
+
+    .stat {
+      display: grid;
+      grid-template-columns: 78px 1fr 42px;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.88rem;
+    }
+
+    .meter {
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.09);
+      overflow: hidden;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+    }
+
+    .fill {
+      height: 100%;
+      width: 50%;
+      border-radius: inherit;
+      transition: width 240ms ease;
+    }
+
+    .tea { background: var(--tea); }
+    .bulk { background: var(--costco); }
+    .tech { background: var(--amazon); }
+    .rage { background: var(--rage); }
+    .mood { background: var(--good); }
+
+    .inventory {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      padding: 14px;
+    }
+
+    .item {
+      min-height: 76px;
+      padding: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .item b {
+      display: block;
+      font-size: 1.15rem;
+    }
+
+    .item span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.8rem;
+      line-height: 1.25;
+    }
+
+    .story {
+      max-height: 220px;
+      overflow: auto;
+      padding: 12px 14px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      scrollbar-color: rgba(255, 255, 255, 0.32) transparent;
+    }
+
+    .log {
+      margin: 0;
+      color: #eee7d7;
+      line-height: 1.35;
+      font-size: 0.88rem;
+    }
+
+    .quest {
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .quest-title {
+      margin: 0;
+      font-weight: 780;
+      line-height: 1.2;
+    }
+
+    .quest-text {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.4;
+      font-size: 0.9rem;
+    }
+
+    .quest button,
+    .small-btn {
+      min-height: 42px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 8px;
+      background: var(--panel-strong);
+      color: var(--ink);
+      cursor: pointer;
+      transition: background 120ms ease, transform 120ms ease;
+    }
+
+    .quest button:hover,
+    .small-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      transform: translateY(-1px);
+    }
+
+    .footer-controls {
+      display: flex;
+      gap: 8px;
+      padding: 0 14px 14px;
+    }
+
+    .footer-controls .small-btn {
+      flex: 1;
+    }
+
+    .danger {
+      color: #ffb5b5;
+    }
+
+    .success {
+      color: #b9ffd0;
+    }
+
+    @media (max-width: 920px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+
+      .stage-wrap {
+        grid-template-rows: 58vh auto;
+      }
+    }
+
+    @media (max-width: 640px) {
+      header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .timebox {
+        justify-content: flex-start;
+      }
+
+      .control-band {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .stat {
+        grid-template-columns: 70px 1fr 38px;
+      }
+
+      .inventory {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="brand">
+        <h1>Adventures in the World of Amit</h1>
+        <div class="tagline">A tiny life simulator about tea, bulk goods, packages, and aggressive discourse.</div>
+      </div>
+      <div class="timebox" aria-label="Simulation summary">
+        <div class="pill" id="day">Day 1</div>
+        <div class="pill" id="place">Home Base</div>
+        <div class="pill" id="title">Mildly Online Creature</div>
+      </div>
+    </header>
+
+    <main>
+      <section class="stage-wrap" aria-label="Game world">
+        <div class="stage">
+          <canvas id="world" width="1280" height="760" aria-label="Animated world of Amit"></canvas>
+          <div class="toast" id="toast">Amit wakes up. The world contains many things. This is already suspicious.</div>
+        </div>
+        <div class="control-band" aria-label="Actions">
+          <button class="action" data-action="tea">
+            <strong>Pour Tea</strong>
+            <span>Special Indian tea restores patience.</span>
+          </button>
+          <button class="action" data-action="costco">
+            <strong>Costco Run</strong>
+            <span>Bulk snacks, giant receipt, spiritual ballast.</span>
+          </button>
+          <button class="action" data-action="amazon">
+            <strong>Order Tech</strong>
+            <span>A doorstep package appears with unreasonable speed.</span>
+          </button>
+          <button class="action" data-action="ragebait">
+            <strong>Ragebait</strong>
+            <span>Farm engagement from the unsuspecting timeline.</span>
+          </button>
+        </div>
+      </section>
+
+      <aside class="sidebar">
+        <section class="panel" aria-label="Amit needs">
+          <h2>Amit Vitals</h2>
+          <div class="stats" id="stats"></div>
+        </section>
+
+        <section class="panel" aria-label="Inventory">
+          <h2>Inventory</h2>
+          <div class="inventory" id="inventory"></div>
+        </section>
+
+        <section class="panel" aria-label="Adventure">
+          <h2>Current Adventure</h2>
+          <div class="quest">
+            <p class="quest-title" id="questTitle">The Morning Calibration</p>
+            <p class="quest-text" id="questText">Balance Amit with exactly the right amount of tea, retail wandering, gadget desire, and chaos.</p>
+            <button id="questButton">Attempt Adventure</button>
+          </div>
+          <div class="footer-controls">
+            <button class="small-btn" id="pauseButton">Pause</button>
+            <button class="small-btn" id="resetButton">Reset</button>
+          </div>
+        </section>
+
+        <section class="panel" aria-label="Story log">
+          <h2>Chronicle</h2>
+          <div class="story" id="story"></div>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <script>
+    const canvas = document.querySelector("#world");
+    const ctx = canvas.getContext("2d");
+    const statsEl = document.querySelector("#stats");
+    const inventoryEl = document.querySelector("#inventory");
+    const storyEl = document.querySelector("#story");
+    const toastEl = document.querySelector("#toast");
+    const dayEl = document.querySelector("#day");
+    const placeEl = document.querySelector("#place");
+    const titleEl = document.querySelector("#title");
+    const questTitleEl = document.querySelector("#questTitle");
+    const questTextEl = document.querySelector("#questText");
+    const questButton = document.querySelector("#questButton");
+    const pauseButton = document.querySelector("#pauseButton");
+    const resetButton = document.querySelector("#resetButton");
+
+    const clamp = (value, min = 0, max = 100) => Math.max(min, Math.min(max, value));
+    const pick = (list) => list[Math.floor(Math.random() * list.length)];
+
+    const initial = () => ({
+      day: 1,
+      tick: 0,
+      paused: false,
+      place: "Home Base",
+      title: "Mildly Online Creature",
+      x: 0.5,
+      y: 0.55,
+      vx: 0.08,
+      vy: 0.04,
+      facing: 1,
+      blink: 0,
+      stats: {
+        tea: 56,
+        bulk: 44,
+        tech: 48,
+        rage: 40,
+        mood: 64
+      },
+      inventory: {
+        teaCups: 1,
+        costcoHauls: 0,
+        gadgets: 0,
+        posts: 0
+      },
+      log: [
+        "Amit enters the simulation and immediately distrusts the weather.",
+        "Known likes: special Indian tea, Costco, Amazon tech, ragebaiting.",
+        "Known dislikes: every remaining category of existence."
+      ],
+      questIndex: 0,
+      particles: [],
+      hazards: [],
+      lastMessage: "Amit wakes up. The world contains many things. This is already suspicious."
+    });
+
+    let state = initial();
+
+    const adventures = [
+      {
+        title: "The Morning Calibration",
+        text: "Amit needs tea above 70 and mood above 60 to face the day without declaring it cancelled.",
+        test: () => state.stats.tea >= 70 && state.stats.mood >= 60,
+        win: "Amit sips the perfect cup and briefly admits that reality has one redeeming feature.",
+        lose: "Amit stares into an insufficient cup and considers blocking the sun."
+      },
+      {
+        title: "The Costco Pilgrimage",
+        text: "Bring bulk joy above 70 and collect at least one Costco haul.",
+        test: () => state.stats.bulk >= 70 && state.inventory.costcoHauls >= 1,
+        win: "Amit returns with a cart full of impossible quantities and a renewed belief in civilization.",
+        lose: "Amit cannot locate the sample station and takes this as a personal betrayal."
+      },
+      {
+        title: "One-Click Destiny",
+        text: "Own three gadgets before the timeline convinces Amit to buy something with RGB lighting.",
+        test: () => state.inventory.gadgets >= 3 && state.stats.tech >= 65,
+        win: "Amit assembles a tiny command center from boxes that arrived suspiciously fast.",
+        lose: "Amit refreshes tracking for a package that is already in his hands."
+      },
+      {
+        title: "The Discourse Furnace",
+        text: "Publish five posts while keeping mood above 40. It is called balance. Technically.",
+        test: () => state.inventory.posts >= 5 && state.stats.mood >= 40,
+        win: "Amit drops a take so spicy the algorithm sends a thank-you note.",
+        lose: "Amit gets quote-posted by someone with a sunrise avatar and loses faith in language."
+      },
+      {
+        title: "Amit Versus Everything Else",
+        text: "Survive day 5 with every favorite meter above 50.",
+        test: () => state.day >= 5 && ["tea", "bulk", "tech", "rage"].every((key) => state.stats[key] >= 50),
+        win: "Amit becomes a tiny legend: adequately caffeinated, stocked, gadgeted, and menacing online.",
+        lose: "Everything else continues existing. Amit files a complaint with the concept of Tuesday."
+      }
+    ];
+
+    const actionData = {
+      tea: {
+        place: "Tea Nook",
+        message: [
+          "Amit brews special Indian tea with the seriousness of a royal ceremony.",
+          "Cardamom rises. Amit's patience comes back from airplane mode.",
+          "Amit makes tea so strong it negotiates with the laws of physics."
+        ],
+        delta: { tea: 26, mood: 11, rage: -5 },
+        inventory: "teaCups",
+        color: "#e7bd53",
+        burst: "steam"
+      },
+      costco: {
+        place: "Costco",
+        message: [
+          "Amit enters Costco and immediately respects the scale of the operation.",
+          "Amit buys one tiny thing and somehow leaves with a twelve-pack of destiny.",
+          "Amit judges the parking lot, then forgives it after seeing bulk snacks."
+        ],
+        delta: { bulk: 30, mood: 9, tea: -4 },
+        inventory: "costcoHauls",
+        color: "#3ba7ff",
+        burst: "cart"
+      },
+      amazon: {
+        place: "Package Zone",
+        message: [
+          "Amit orders tech from Amazon. A box begins manifesting in the distance.",
+          "Amit buys a cable, a hub, and a mysterious adapter for a problem he may invent later.",
+          "Amit hears a delivery notification and becomes briefly aerodynamic."
+        ],
+        delta: { tech: 28, mood: 8, bulk: -3 },
+        inventory: "gadgets",
+        color: "#ff9a3c",
+        burst: "box"
+      },
+      ragebait: {
+        place: "The Timeline",
+        message: [
+          "Amit posts: 'Actually, everyone is wrong about this.' The timeline ignites.",
+          "Amit asks a question calibrated to ruin eleven brunches.",
+          "Amit quote-posts with surgical precision and a tiny grin."
+        ],
+        delta: { rage: 31, mood: -7, tea: -5 },
+        inventory: "posts",
+        color: "#ff4d6d",
+        burst: "spark"
+      }
+    };
+
+    const hatedThings = [
+      "A regular teabag appears. Amit recoils from the mediocrity.",
+      "Someone suggests paying full price for batteries. Amit's aura flickers.",
+      "A website asks Amit to accept all cookies. Amit accepts nothing.",
+      "A meeting invite arrives with no agenda. Amit hisses at the calendar.",
+      "A product page has no specs. Amit loses trust in the written word.",
+      "The phrase 'quick sync' echoes in the air. Amit takes psychic damage.",
+      "A cart has only one item. Amit finds this spiritually inefficient.",
+      "A person says 'just be offline.' Amit becomes more online out of principle."
+    ];
+
+    function addLog(text) {
+      state.log.unshift(text);
+      state.log = state.log.slice(0, 24);
+      state.lastMessage = text;
+      toastEl.textContent = text;
+      renderSidebar();
+    }
+
+    function applyDelta(delta) {
+      Object.entries(delta).forEach(([key, amount]) => {
+        state.stats[key] = clamp(state.stats[key] + amount);
+      });
+      const favorites = (state.stats.tea + state.stats.bulk + state.stats.tech + state.stats.rage) / 4;
+      state.stats.mood = clamp(state.stats.mood + (favorites - 55) * 0.04);
+    }
+
+    function burst(color, kind, amount = 22) {
+      for (let i = 0; i < amount; i += 1) {
+        state.particles.push({
+          x: state.x,
+          y: state.y,
+          vx: (Math.random() - 0.5) * 0.018,
+          vy: (Math.random() - 0.8) * 0.018,
+          life: 44 + Math.random() * 24,
+          maxLife: 70,
+          size: 4 + Math.random() * 9,
+          color,
+          kind
+        });
+      }
+    }
+
+    function doAction(name) {
+      const data = actionData[name];
+      state.place = data.place;
+      applyDelta(data.delta);
+      state.inventory[data.inventory] += 1;
+      state.x = clamp(state.x + (Math.random() - 0.5) * 0.22, 0.16, 0.84);
+      state.y = clamp(state.y + (Math.random() - 0.5) * 0.16, 0.28, 0.78);
+      burst(data.color, data.burst, 28);
+      addLog(pick(data.message));
+      updateTitle();
+    }
+
+    function decay() {
+      state.tick += 1;
+      if (state.tick % 8 === 0) {
+        state.stats.tea = clamp(state.stats.tea - 1.8);
+        state.stats.bulk = clamp(state.stats.bulk - 1.4);
+        state.stats.tech = clamp(state.stats.tech - 1.6);
+        state.stats.rage = clamp(state.stats.rage - 1.2);
+        state.stats.mood = clamp(state.stats.mood - 0.7);
+      }
+
+      if (state.tick % 95 === 0) {
+        const damage = 7 + Math.random() * 12;
+        state.stats.mood = clamp(state.stats.mood - damage);
+        state.stats.rage = clamp(state.stats.rage + damage * 0.55);
+        state.hazards.push({
+          x: Math.random() * 0.76 + 0.12,
+          y: Math.random() * 0.42 + 0.25,
+          life: 180,
+          label: "Everything Else"
+        });
+        addLog(pick(hatedThings));
+      }
+
+      if (state.tick % 520 === 0) {
+        state.day += 1;
+        addLog(`Day ${state.day} begins. Amit checks whether existence has improved. Early signs are mixed.`);
+      }
+
+      updateTitle();
+      renderSidebar();
+    }
+
+    function updateTitle() {
+      const s = state.stats;
+      if (s.mood <= 15) state.title = "Tiny Crisis With Wi-Fi";
+      else if (s.rage >= 86) state.title = "Engagement Arsonist";
+      else if (s.tea >= 84 && s.tech >= 74) state.title = "Caffeinated Gadget Sage";
+      else if (s.bulk >= 82) state.title = "Bulk Goods Mystic";
+      else if (s.tech >= 82) state.title = "Prime Delivery Prophet";
+      else if (s.tea >= 82) state.title = "Tea-Fueled Optimist";
+      else state.title = "Mildly Online Creature";
+    }
+
+    function attemptQuest() {
+      const quest = adventures[state.questIndex];
+      if (quest.test()) {
+        state.stats.mood = clamp(state.stats.mood + 18);
+        state.stats.rage = clamp(state.stats.rage + 8);
+        burst("#72e3a0", "star", 42);
+        addLog(quest.win);
+        state.questIndex = Math.min(state.questIndex + 1, adventures.length - 1);
+      } else {
+        state.stats.mood = clamp(state.stats.mood - 11);
+        state.stats.rage = clamp(state.stats.rage + 13);
+        burst("#ff6b6b", "spark", 30);
+        addLog(quest.lose);
+      }
+      renderSidebar();
+    }
+
+    function reset() {
+      state = initial();
+      renderSidebar();
+      addLog("The universe reloads. Amit remembers the important things and discards the rest.");
+    }
+
+    function renderSidebar() {
+      const statRows = [
+        ["tea", "Tea"],
+        ["bulk", "Costco"],
+        ["tech", "Tech"],
+        ["rage", "Rage"],
+        ["mood", "Mood"]
+      ];
+      statsEl.innerHTML = statRows.map(([key, label]) => `
+        <div class="stat">
+          <span>${label}</span>
+          <div class="meter"><div class="fill ${key}" style="width:${state.stats[key].toFixed(0)}%"></div></div>
+          <span>${state.stats[key].toFixed(0)}</span>
+        </div>
+      `).join("");
+
+      const inventoryRows = [
+        ["teaCups", "Tea Cups", "Ceremonial fuel"],
+        ["costcoHauls", "Costco Hauls", "Bulk happiness"],
+        ["gadgets", "Gadgets", "Useful, probably"],
+        ["posts", "Rage Posts", "Engagement sparks"]
+      ];
+      inventoryEl.innerHTML = inventoryRows.map(([key, label, note]) => `
+        <div class="item">
+          <b>${state.inventory[key]}</b>
+          <span>${label}<br>${note}</span>
+        </div>
+      `).join("");
+
+      storyEl.innerHTML = state.log.map((entry, index) => {
+        const tone = entry.includes("legend") || entry.includes("perfect") || entry.includes("thank-you") ? " success" : "";
+        const danger = entry.includes("damage") || entry.includes("betrayal") || entry.includes("wrong") ? " danger" : "";
+        return `<p class="log${tone}${danger}">${index === 0 ? "Now: " : ""}${entry}</p>`;
+      }).join("");
+
+      const quest = adventures[state.questIndex];
+      questTitleEl.textContent = quest.title;
+      questTextEl.textContent = quest.text;
+      dayEl.textContent = `Day ${state.day}`;
+      placeEl.textContent = state.place;
+      titleEl.textContent = state.title;
+      pauseButton.textContent = state.paused ? "Resume" : "Pause";
+    }
+
+    function drawBackground(w, h, time) {
+      const sky = ctx.createLinearGradient(0, 0, w, h);
+      sky.addColorStop(0, "#242b30");
+      sky.addColorStop(0.48, "#283237");
+      sky.addColorStop(1, "#171a1f");
+      ctx.fillStyle = sky;
+      ctx.fillRect(0, 0, w, h);
+
+      ctx.fillStyle = "rgba(255,255,255,0.05)";
+      for (let i = 0; i < 22; i += 1) {
+        const x = ((i * 173 + time * 9) % (w + 160)) - 80;
+        const y = 34 + (i * 47) % 210;
+        ctx.beginPath();
+        ctx.ellipse(x, y, 40 + (i % 3) * 20, 10 + (i % 4) * 5, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.fillStyle = "#1d211e";
+      ctx.fillRect(0, h * 0.72, w, h * 0.28);
+
+      const road = ctx.createLinearGradient(0, h * 0.66, 0, h);
+      road.addColorStop(0, "#30343a");
+      road.addColorStop(1, "#17191d");
+      ctx.fillStyle = road;
+      ctx.beginPath();
+      ctx.moveTo(0, h);
+      ctx.lineTo(w * 0.32, h * 0.66);
+      ctx.lineTo(w * 0.68, h * 0.66);
+      ctx.lineTo(w, h);
+      ctx.closePath();
+      ctx.fill();
+
+      drawBuilding(w * 0.08, h * 0.38, w * 0.2, h * 0.28, "#27364a", "COSTCO", "#3ba7ff");
+      drawBuilding(w * 0.72, h * 0.36, w * 0.19, h * 0.3, "#3a3028", "AMAZON", "#ff9a3c");
+      drawTeaStand(w * 0.42, h * 0.44, w * 0.16, h * 0.22);
+      drawTimeline(w * 0.61, h * 0.42, w * 0.11, h * 0.26, time);
+    }
+
+    function drawBuilding(x, y, w, h, color, label, accent) {
+      ctx.fillStyle = "rgba(0,0,0,0.24)";
+      ctx.fillRect(x + 8, y + 12, w, h);
+      ctx.fillStyle = color;
+      ctx.fillRect(x, y, w, h);
+      ctx.strokeStyle = "rgba(255,255,255,0.16)";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(x, y, w, h);
+      ctx.fillStyle = accent;
+      ctx.fillRect(x, y, w, h * 0.18);
+      ctx.fillStyle = "#f7f1df";
+      ctx.font = "700 22px system-ui";
+      ctx.textAlign = "center";
+      ctx.fillText(label, x + w / 2, y + h * 0.12 + 8);
+      ctx.fillStyle = "rgba(255,255,255,0.12)";
+      for (let i = 0; i < 3; i += 1) {
+        ctx.fillRect(x + w * (0.16 + i * 0.25), y + h * 0.34, w * 0.13, h * 0.18);
+      }
+    }
+
+    function drawTeaStand(x, y, w, h) {
+      ctx.fillStyle = "rgba(0,0,0,0.28)";
+      ctx.fillRect(x + 8, y + 12, w, h);
+      ctx.fillStyle = "#423529";
+      ctx.fillRect(x, y + h * 0.22, w, h * 0.78);
+      ctx.fillStyle = "#e7bd53";
+      ctx.beginPath();
+      ctx.moveTo(x - 10, y + h * 0.22);
+      ctx.lineTo(x + w * 0.14, y);
+      ctx.lineTo(x + w * 0.86, y);
+      ctx.lineTo(x + w + 10, y + h * 0.22);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = "#17191d";
+      ctx.font = "700 20px system-ui";
+      ctx.textAlign = "center";
+      ctx.fillText("TEA", x + w / 2, y + h * 0.15);
+      ctx.fillStyle = "#f7f1df";
+      ctx.beginPath();
+      ctx.roundRect(x + w * 0.35, y + h * 0.48, w * 0.3, h * 0.25, 8);
+      ctx.fill();
+      ctx.strokeStyle = "#e7bd53";
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.arc(x + w * 0.66, y + h * 0.58, w * 0.08, -Math.PI / 2, Math.PI / 2);
+      ctx.stroke();
+    }
+
+    function drawTimeline(x, y, w, h, time) {
+      ctx.fillStyle = "rgba(0,0,0,0.32)";
+      ctx.fillRect(x + 8, y + 12, w, h);
+      ctx.fillStyle = "#14161b";
+      ctx.fillRect(x, y, w, h);
+      ctx.strokeStyle = "rgba(255,255,255,0.18)";
+      ctx.strokeRect(x, y, w, h);
+      for (let i = 0; i < 5; i += 1) {
+        ctx.fillStyle = i % 2 ? "#ff4d6d" : "#f7f1df";
+        ctx.fillRect(x + w * 0.16, y + h * (0.16 + i * 0.15) + Math.sin(time * 2 + i) * 2, w * (0.52 + i * 0.05), 5);
+      }
+      ctx.fillStyle = "#ff4d6d";
+      ctx.font = "700 18px system-ui";
+      ctx.textAlign = "center";
+      ctx.fillText("TAKES", x + w / 2, y + h * 0.91);
+    }
+
+    function drawAmit(w, h, time) {
+      const x = state.x * w;
+      const y = state.y * h;
+      const bob = Math.sin(time * 7) * 5;
+      const moodScale = state.stats.mood / 100;
+      const body = 42 + moodScale * 10;
+
+      ctx.save();
+      ctx.translate(x, y + bob);
+      ctx.scale(state.facing, 1);
+
+      ctx.fillStyle = "rgba(0,0,0,0.28)";
+      ctx.beginPath();
+      ctx.ellipse(0, body * 0.82, body * 0.78, body * 0.18, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = "#d8a45f";
+      ctx.beginPath();
+      ctx.ellipse(0, 0, body * 0.76, body, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = "#f0c17b";
+      ctx.beginPath();
+      ctx.ellipse(0, -body * 0.1, body * 0.54, body * 0.72, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = "#2b1c14";
+      ctx.beginPath();
+      ctx.arc(-body * 0.25, -body * 0.1, 5, 0, Math.PI * 2);
+      ctx.arc(body * 0.25, -body * 0.1, 5, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.strokeStyle = "#2b1c14";
+      ctx.lineWidth = 3;
+      ctx.lineCap = "round";
+      ctx.beginPath();
+      if (state.stats.mood > 50) {
+        ctx.arc(0, body * 0.12, body * 0.22, 0.1, Math.PI - 0.1);
+      } else {
+        ctx.arc(0, body * 0.28, body * 0.22, Math.PI + 0.1, Math.PI * 2 - 0.1);
+      }
+      ctx.stroke();
+
+      ctx.strokeStyle = "#d8a45f";
+      ctx.lineWidth = 8;
+      ctx.beginPath();
+      ctx.moveTo(-body * 0.62, body * 0.1);
+      ctx.lineTo(-body * 0.98, body * 0.36 + Math.sin(time * 8) * 4);
+      ctx.moveTo(body * 0.62, body * 0.1);
+      ctx.lineTo(body * 1.02, body * 0.34 + Math.cos(time * 8) * 4);
+      ctx.stroke();
+
+      ctx.fillStyle = "#14161b";
+      ctx.fillRect(-body * 0.34, -body * 1.05, body * 0.68, body * 0.16);
+      ctx.fillStyle = "#ff4d6d";
+      ctx.fillRect(-body * 0.22, -body * 1.2, body * 0.44, body * 0.17);
+
+      if (state.stats.rage > 70) {
+        ctx.strokeStyle = "#ff4d6d";
+        ctx.lineWidth = 3;
+        for (let i = 0; i < 3; i += 1) {
+          ctx.beginPath();
+          ctx.moveTo(-body * 0.55 + i * body * 0.55, -body * 1.28);
+          ctx.lineTo(-body * 0.45 + i * body * 0.55, -body * 1.48 - Math.sin(time * 10 + i) * 8);
+          ctx.stroke();
+        }
+      }
+
+      ctx.restore();
+    }
+
+    function drawParticles(w, h) {
+      state.particles = state.particles.filter((p) => p.life > 0);
+      state.particles.forEach((p) => {
+        p.life -= 1;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.00025;
+        const alpha = clamp(p.life / p.maxLife, 0, 1);
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = p.color;
+        const x = p.x * w;
+        const y = p.y * h;
+        if (p.kind === "box") {
+          ctx.fillRect(x - p.size / 2, y - p.size / 2, p.size, p.size);
+        } else if (p.kind === "cart") {
+          ctx.fillRect(x - p.size / 2, y - p.size / 3, p.size, p.size * 0.55);
+          ctx.fillRect(x - p.size / 4, y + p.size * 0.32, p.size * 0.18, p.size * 0.18);
+          ctx.fillRect(x + p.size / 4, y + p.size * 0.32, p.size * 0.18, p.size * 0.18);
+        } else {
+          ctx.beginPath();
+          ctx.arc(x, y, p.size / 2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      });
+      ctx.globalAlpha = 1;
+    }
+
+    function drawHazards(w, h) {
+      state.hazards = state.hazards.filter((hazard) => hazard.life > 0);
+      state.hazards.forEach((hazard) => {
+        hazard.life -= 1;
+        const alpha = clamp(hazard.life / 80, 0, 1);
+        const x = hazard.x * w;
+        const y = hazard.y * h;
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = "#4c4f56";
+        ctx.beginPath();
+        ctx.roundRect(x - 68, y - 28, 136, 56, 8);
+        ctx.fill();
+        ctx.strokeStyle = "rgba(255,255,255,0.18)";
+        ctx.stroke();
+        ctx.fillStyle = "#f7f1df";
+        ctx.font = "700 14px system-ui";
+        ctx.textAlign = "center";
+        ctx.fillText(hazard.label, x, y + 5);
+      });
+      ctx.globalAlpha = 1;
+    }
+
+    function moveAmit(dt) {
+      state.x += state.vx * dt;
+      state.y += state.vy * dt;
+      if (state.x < 0.13 || state.x > 0.88) {
+        state.vx *= -1;
+        state.facing *= -1;
+      }
+      if (state.y < 0.36 || state.y > 0.78) state.vy *= -1;
+      state.x = clamp(state.x, 0.13, 0.88);
+      state.y = clamp(state.y, 0.36, 0.78);
+    }
+
+    let last = performance.now();
+    function frame(now) {
+      const dt = Math.min(0.035, (now - last) / 1000);
+      last = now;
+      const w = canvas.width;
+      const h = canvas.height;
+      const time = now / 1000;
+
+      if (!state.paused) {
+        moveAmit(dt);
+      }
+      drawBackground(w, h, time);
+      drawHazards(w, h);
+      drawParticles(w, h);
+      drawAmit(w, h, time);
+
+      requestAnimationFrame(frame);
+    }
+
+    function simulationPulse() {
+      if (!state.paused) decay();
+    }
+
+    document.querySelectorAll("[data-action]").forEach((button) => {
+      button.addEventListener("click", () => doAction(button.dataset.action));
+    });
+
+    questButton.addEventListener("click", attemptQuest);
+    pauseButton.addEventListener("click", () => {
+      state.paused = !state.paused;
+      addLog(state.paused ? "Amit pauses to silently judge everything." : "Amit resumes the adventure with renewed suspicion.");
+      renderSidebar();
+    });
+    resetButton.addEventListener("click", reset);
+
+    window.addEventListener("keydown", (event) => {
+      const keyMap = { "1": "tea", "2": "costco", "3": "amazon", "4": "ragebait" };
+      if (keyMap[event.key]) doAction(keyMap[event.key]);
+      if (event.key.toLowerCase() === "q") attemptQuest();
+      if (event.key === " ") {
+        event.preventDefault();
+        state.paused = !state.paused;
+        renderSidebar();
+      }
+    });
+
+    if (!CanvasRenderingContext2D.prototype.roundRect) {
+      CanvasRenderingContext2D.prototype.roundRect = function roundRect(x, y, width, height, radius) {
+        const r = Math.min(radius, width / 2, height / 2);
+        this.beginPath();
+        this.moveTo(x + r, y);
+        this.arcTo(x + width, y, x + width, y + height, r);
+        this.arcTo(x + width, y + height, x, y + height, r);
+        this.arcTo(x, y + height, x, y, r);
+        this.arcTo(x, y, x + width, y, r);
+        this.closePath();
+        return this;
+      };
+    }
+
+    renderSidebar();
+    requestAnimationFrame(frame);
+    setInterval(simulationPulse, 900);
+  </script>
+</body>
+</html>
